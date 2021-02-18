@@ -21,13 +21,20 @@ def debug(msg):
     diagnostic = sys.stderr.write
     diagnostic('[' + time.asctime().split(" ")[3] + '] ' + msg)
 
+
 def log(msg):
     # Adds to the running log and appends the hard copy of the log
     running_log.append('[' + time.asctime().split(" ")[3] + '] ' + msg)
     # log_file = open("/var/log/wifi.problems.log", "a")
-    log_file = open("/tmp/wifi.problems.log", "a")
-    log_file.write(time.asctime(time.localtime(time.time())) + msg)
-    log_file.close()
+    try:
+        # log_file = open("/tmp/wifi.problems.log", "a")
+        log_file = open("/var/log/wifi.problems.log", "a")
+        log_file.write(time.asctime(time.localtime(time.time())) + msg)
+        log_file.close()
+    except PermissionError:
+        debug("Unable to append log, permission denied")
+    finally:
+        debug("Error in log File IO")
 
 
 def wifi_adapter(state):
