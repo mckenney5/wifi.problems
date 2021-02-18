@@ -8,7 +8,7 @@ enable = True
 disable = False
 offline_flag = False
 running_log = ['[' + time.asctime() + "] Start"]
-debug_log = ['[' + time.asctime() + "] Start"]
+debug_log = ['[' + time.asctime() + "] Start" + '\n']
 
 
 # Main File, back-end
@@ -19,7 +19,7 @@ def debug(msg):
 
     # uncomment if you want debugging info logged in the console
     diagnostic = sys.stderr.write
-    diagnostic('[' + time.asctime().split(" ")[3] + '] ' + msg)
+    diagnostic('[' + time.asctime().split(" ")[3] + '] ' + msg + '\n')
 
 
 def log(msg):
@@ -38,22 +38,21 @@ def log(msg):
 
 
 def wifi_adapter(state):
-    # Disables and Reenables the wireless adapter
+    # Disables and Re-enables the wireless adapter
     if state == enable:
         debug("Enabling Adapter")
-        # Enable adapter (os.system)
+        os.system("nmcli radio wifi on")
     else:
         debug("Disabling Adapter")
-        # Disable Adapter (os.system)
+        os.system("nmcli radio wifi off")
 
 
 def power_cycle():
     # tells the computer to restart
-    os.system("echo test")
+    os.system("sudo reboot")
 
 
 def is_offline():
-    return True
     # checks if user is online via ping
     response = os.system("ping -c 1 8.8.8.8")  # ping Google's DNS once
     if response == 0:
@@ -107,6 +106,7 @@ while True:
         if is_offline() & is_offline():
             # if the user is offline, triple check
             if offline_flag == False:
+                # This stops the log from getting spammed, only logs offline once per event
                 log("Offline")
                 offline_flag = True
 
@@ -115,16 +115,9 @@ while True:
             debug("Sleeping for 5 minutes...")
             time.sleep(5 * 60)  # if the user said no, sleep for five minutes
     else:
-        debug("Online. Checking again in 10 seconds...")
+        debug("Online")
         if offline_flag == True:
             log("Back Online")
             offline_flag = False
+    debug("Checking status again in 10 seconds...")
     time.sleep(10)
-    # log
-    # notify the user
-    # try to disable and enable the adapter
-    # check if online
-    # if not, recommend a power cycle
-    #   powercycle
-    #   check again (sleep), if still not working, recommend a hard reset
-    # log when back online with a duration
