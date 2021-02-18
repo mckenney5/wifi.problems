@@ -38,6 +38,7 @@ def log(msg):
 
 
 def wifi_adapter(state):
+    # Disables and Reenables the wireless adapter
     if state == enable:
         debug("Enabling Adapter")
         # Enable adapter (os.system)
@@ -47,7 +48,7 @@ def wifi_adapter(state):
 
 
 def power_cycle():
-    # os.system("sudo reboot")
+    # tells the computer to restart
     os.system("echo test")
 
 
@@ -62,6 +63,7 @@ def is_offline():
 
 
 def prompt_user(msg):
+    # Displays a message box and returns true on 'yes' and false on everything else
     output = os.system('xmessage -center ' + msg + ' -buttons Yes:2,No:0,"View Logs":3,"View Debugging '
                                                    'Information":4,Cancel:0') >> 8
     if output == 2:
@@ -86,7 +88,7 @@ def prompt_user(msg):
 
 
 def attempt_fix():
-    # first try to get online again
+    # Attempts to fix the connectivity issue
     debug("Attempting to toggle wireless adapter")
     wifi_adapter(disable)
     time.sleep(5)
@@ -99,7 +101,7 @@ def attempt_fix():
             power_cycle()
 
 
-# control loop
+# Control loop
 while True:
     if is_offline():
         if is_offline() & is_offline():
