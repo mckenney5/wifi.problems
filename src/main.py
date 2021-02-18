@@ -7,15 +7,23 @@ import time
 enable = True
 disable = False
 offline_flag = False
-running_log = ['[' + time.asctime(time.localtime(time.time())) + "] Start"]
-debug = sys.stderr.write
+running_log = ['[' + time.asctime() + "] Start"]
+debug_log = ['[' + time.asctime() + "] Start"]
 
 
 # Main File, back-end
 
+def debug(msg):
+    # Adds to the debugging log so the user can see what the program is doing
+    debug_log.append('[' + time.asctime().split(" ")[3] + '] ' + msg)
+
+    # uncomment if you want debugging info logged in the console
+    diagnostic = sys.stderr.write
+    diagnostic('[' + time.asctime().split(" ")[3] + '] ' + msg)
+
 def log(msg):
     # Adds to the running log and appends the hard copy of the log
-    running_log.append('[' + time.asctime(time.localtime(time.time())) + '] ' + msg)
+    running_log.append('[' + time.asctime().split(" ")[3] + '] ' + msg)
     # log_file = open("/var/log/wifi.problems.log", "a")
     log_file = open("/tmp/wifi.problems.log", "a")
     log_file.write(time.asctime(time.localtime(time.time())) + msg)
@@ -23,11 +31,11 @@ def log(msg):
 
 
 def wifi_adapter(state):
-    if state == True:
-        print("Enabling Adapter")
+    if state == enable:
+        debug("Enabling Adapter")
         # Enable adapter (os.system)
     else:
-        print("Disabling Adapter")
+        debug("Disabling Adapter")
         # Disable Adapter (os.system)
 
 
@@ -47,14 +55,22 @@ def is_offline():
 
 
 def prompt_user(msg):
-    output = os.system('xmessage -center ' + msg + ' -buttons Yes:2,No:0,View-Logs:3,Cancel:0') >> 8
+    output = os.system('xmessage -center ' + msg + ' -buttons Yes:2,No:0,"View Logs":3,"View Debugging '
+                                                   'Information":4,Cancel:0') >> 8
     if output == 2:
         return True  # os.system returns a binary number, shifting the bits 8 to the right
-                     # converts it to a 2 for yes or 0 for no
+        # converts it to a 2 for yes or 0 for no
     elif output == 3:
         # display the current log for this session
         full_log = "Today:"
         for item in running_log:
+            full_log = full_log + "\n" + item
+        os.system('xmessage -center "' + full_log + '"')
+        return prompt_user(msg)
+    elif output == 4:
+        # display the current debugging log for this session
+        full_log = "Diagnostic Information:"
+        for item in debug_log:
             full_log = full_log + "\n" + item
         os.system('xmessage -center "' + full_log + '"')
         return prompt_user(msg)
@@ -90,7 +106,7 @@ while True:
             debug("Sleeping for 5 minutes...")
             time.sleep(5 * 60)  # if the user said no, sleep for five minutes
     else:
-        debug("OK")
+        debug("Online. Checking again in 10 seconds...")
         if offline_flag == True:
             log("Back Online")
             offline_flag = False
