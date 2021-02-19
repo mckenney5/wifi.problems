@@ -2,6 +2,8 @@ WiFi Fixer
 =============
 _A python program to help fix issues with WiFi on Linux_
 
+![screen shot](https://github.com/mckenney5/wifi.problems/raw/main/m1.png)
+
 ## Description
 This software was created to help log and trouble shoot wireless internet connection issues.
 It detects when you are offline, then attempts to toggle your wireless adapter. If that does
