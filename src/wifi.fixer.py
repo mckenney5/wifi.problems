@@ -54,7 +54,7 @@ def power_cycle():
 
 def is_offline():
     # checks if user is online via ping
-    response = os.system("ping -c 1 8.8.8.8")  # ping Google's DNS once
+    response = os.system("ping -c 1 8.8.8.8 > /dev/null 2>&1")  # ping Google's DNS once
     if response == 0:
         return False
     else:
@@ -104,6 +104,7 @@ def attempt_fix():
 
 
 # Control loop
+print("Working...")
 while True:
     if is_offline():
         if is_offline() & is_offline():
