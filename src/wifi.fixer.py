@@ -92,12 +92,15 @@ def attempt_fix():
     wifi_adapter(disable)
     time.sleep(5)
     wifi_adapter(enable)
-    time.sleep(5)
+    time.sleep(15)
     if is_offline():
         debug("Still offline")
         if prompt_user("Toggle failed. Would you like to restart your computer? NOTE: If this does not work, "
                        "you need to hard reset your computer by holding the power button down."):
             power_cycle()
+    else:
+        debug("Online")
+        log("Back Online")
 
 
 # Control loop
@@ -113,7 +116,7 @@ while True:
             if prompt_user("You are offline! Would you like me to try to fix this?"):
                 attempt_fix()
             debug("Sleeping for 5 minutes...")
-            time.sleep(5 * 60)  # if the user said no, sleep for five minutes
+            time.sleep(5 * 60)  # if the user said no or we fixed it, sleep for five minutes
     else:
         debug("Online")
         if offline_flag == True:
