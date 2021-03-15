@@ -13,7 +13,7 @@ not work then it attempts a reboot. The software also logs when you are offline 
 This code is licensed under the MIT license. See 'LICENSE' for details.
 
 ## How to Run the Program
-In a terminal, type `python3 wifi.fixer.py`
+In a terminal, type `python3 wifi.fixer.py` or what ever version of python you have
 
 or you can add it to your .xinitrc file and have it run at boot.
 
